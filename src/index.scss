@@ -1,0 +1,18 @@
+$primary: #2846dc;
+$secondary: #828282;
+$theme-colors: (
+  'primary': $primary,
+  'secondary': $secondary,
+);
+
+@use "~bootstrap/scss/bootstrap";
+
+::-webkit-scrollbar {
+  width: 5px;
+  // box-shadow: inset 5px 0px 5px rgba($color: #000000, $alpha: 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: $secondary;
+  border-radius: 5px;
+}
