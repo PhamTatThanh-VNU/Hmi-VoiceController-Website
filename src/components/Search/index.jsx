@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useSpeechSynthesis } from 'react-speech-kit';
+import {speak} from "../../api/voiceRecognition";
 
 const Search = ({ setStopReco }) => {
   const [searchText, setSearchText] = useState('');
@@ -10,7 +10,6 @@ const Search = ({ setStopReco }) => {
   const [typing, setTyping] = useState(false);
 
   const location = useLocation();
-  const { speak } = useSpeechSynthesis();
 
   const searchVideos = (string) => {
     setTyping(false);
@@ -27,13 +26,11 @@ const Search = ({ setStopReco }) => {
       .then(async (res) => {
         setVideos(res.data.items);
         setVideosLoading(false);
-        await speak({ text: 'Videos Search Complete. Here are the results' });
+        await speak( 'Videos Search Complete. Here are the results');
       })
       .catch(async (err) => {
         console.log(err.message);
-        await speak({
-          text: 'Something Went Wrong Please check your internet connection and console for the error',
-        });
+        await speak('Something Went Wrong Please check your internet connection and console for the error');
         setVideosLoading(false);
       });
   };

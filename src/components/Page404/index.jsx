@@ -1,4 +1,4 @@
-import { useSpeechSynthesis } from "react-speech-kit";
+import {speak} from "../../api/voiceRecognition";
 
 const Page404 = () => {
   //   const { speak } = useSpeechSynthesis();
