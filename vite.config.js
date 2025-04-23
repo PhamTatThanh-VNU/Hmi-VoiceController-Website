@@ -12,11 +12,7 @@ export default defineConfig({
     },
   },
   css: {
-    preprocessorOptions: {
-      scss: {
-        quietDeps: true,
-      },
-    },
+    devSourcemap: false,
   },
   server: {
     port: 3000,

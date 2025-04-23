@@ -1,5 +1,5 @@
 import React from "react";
-import "./openVideoHome.scss";
+import "./openVideoHome.css";
 
 const OpenVideoHome = ({ setOpenVideoHome, selectedVideos }) => {
   return (

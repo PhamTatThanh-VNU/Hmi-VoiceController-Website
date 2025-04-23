@@ -1,6 +1,6 @@
 import React from "react";
 import { recognition , speak} from "../../api/voiceRecognition";
-import './style.scss';
+import './style.css';
 import CommandsTable from "./CommandsTable";
 import { toast } from "react-toastify";
 
