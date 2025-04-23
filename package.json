@@ -5,6 +5,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@google/genai": "^0.9.0",
     "@popperjs/core": "^2.11.8",
     "@redux-devtools/extension": "^3.3.0",
     "@vitejs/plugin-react-swc": "^3.7.0",

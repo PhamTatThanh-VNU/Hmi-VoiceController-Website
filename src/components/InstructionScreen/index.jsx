@@ -4,7 +4,7 @@ import './style.scss';
 import CommandsTable from "./CommandsTable";
 import { toast } from "react-toastify";
 
-const InstructionScreen = ({ stopReco, setInstructionScreen, setStopReco }) => {
+const InstructionScreen = ({  setInstructionScreen, setIsRecognitionActive}) => {
   return (
     <div className="col-md-12 instructions ">
       <div className="card col-md-6 mx-auto mt-5 px-5 py-2">
@@ -16,11 +16,9 @@ const InstructionScreen = ({ stopReco, setInstructionScreen, setStopReco }) => {
             onClick={async () => {
               setInstructionScreen(false);
               toast.dark("Hãy bắt đầu ra lệnh bằng giọng nói của bạn");
-              if (stopReco) {
-                recognition.start();
-              }
+              setIsRecognitionActive(false);
               speak('Hãy bắt đầu ra lệnh bằng giọng nói của bạn');
-              setStopReco(false);
+              setIsRecognitionActive(true)
             }}
           >
             &times;
@@ -260,8 +258,6 @@ const InstructionScreen = ({ stopReco, setInstructionScreen, setStopReco }) => {
           <button
             type="button"
             onClick={() => {
-              setStopReco(false);
-              recognition.start();
               setInstructionScreen(false);
             }}
             className="btn btn-primary mx-auto mb-4 w-100"

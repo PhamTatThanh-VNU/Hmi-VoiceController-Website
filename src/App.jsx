@@ -5,6 +5,7 @@ import { recognition, speak, toggleRecognition } from "./api/voiceRecognition";
 import { addVideos } from "./redux/actionCreators/videosActionCreator";
 import { toast, ToastContainer } from "react-toastify";
 import { routes } from "./constants";
+import ChatWithAI from "./components/AIChat/ChatWithAi";
 
 import Home from "./components/Home";
 import InstructionScreen from "./components/InstructionScreen";
@@ -13,7 +14,6 @@ import Search from "./components/Search";
 import CurrentVideo from "./components/CurrentVideo";
 import OpenVideoHome from "./components/OpenVideo/OpenVideoHome";
 import Videos from "./components/Videos";
-import About from "./components/About/About";
 import Contact from "./components/Contact/Contact";
 import Page404 from "./components/Page404";
 
@@ -39,6 +39,7 @@ const App = () => {
   const [newMessage, setNewMessage] = useState("");
 
   const history = useHistory();
+  //Handle AI
   const { videosLoading, videos, popularVideos } = useSelector(
     (state) => ({
       videosLoading: state.videos.videosLoading,
@@ -150,11 +151,12 @@ const App = () => {
     let pageName = command.replace("đi tới", "").trim();
     if (pageName.includes("trang chủ")) pageName = "home";
     else if (pageName.includes("tìm kiếm")) pageName = "search";
-    else if (pageName.includes("xem thêm")) pageName = "about";
+    else if (pageName.includes("trò chuyện")) pageName = "chat";
     else if (pageName.includes("liên hệ")) pageName = "contact";
     else pageName = pageName.split(" ").pop();
 
     if (routes.includes(pageName.toLowerCase())) {
+      console.log(pageName)
       if (pageName === "search") {
         history.push({ pathname: "/search", state: { text: "" } });
         speak("Bạn muốn tìm kiếm gì? Hãy nói 'tìm kiếm' theo sau là từ khóa, hoặc nhập vào thanh tìm kiếm.");
@@ -171,11 +173,11 @@ const App = () => {
     const command = event.results[0][0].transcript.toLowerCase().replace(".", "");
     console.log("Lệnh nhận được:", command);
 
-    if (command === "dừng nhận lệnh") {
+    if (command === "dừng nhận") {
       toggleRecognition(false, null, null);
       setIsRecognitionActive(false);
       toast.dark("Đã dừng nhận lệnh!");
-      await speak("Đã dừng nhận lệnh!");
+      speak("Đã dừng nhận lệnh!");
       return;
     }
 
@@ -266,7 +268,7 @@ const App = () => {
             />
           )}
         />
-        <Route path="/about" component={() => <About />} />
+        <Route path="/chat" component={() => <ChatWithAI />} />
         <Route
           path="/contact"
           component={() => (

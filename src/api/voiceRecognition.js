@@ -20,8 +20,8 @@ export const speak = (message, onEndCallback) => {
 
   // Stop any ongoing speech
   window.speechSynthesis.cancel();
-  if (recognition && recognition.onend === null) {
-    recognition.stop();
+  if (recognition) {
+    stopRecognition();
   }
   // Speak the message
   window.speechSynthesis.speak(speech);
