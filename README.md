@@ -1,12 +1,39 @@
-# React + Vite
+## 📦 Requirements
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- [Node.js](https://nodejs.org/) must be installed on your system.
 
-Currently, two official plugins are available:
+## 🚀 Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Follow the steps below to set up and run the project locally.
 
-## Expanding the ESLint configuration
+### 1. Install Dependencies
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Run the following command to install all required packages:
+
+```bash
+npm install --force
+```
+
+> **Note:** The `--force` flag is used to resolve potential dependency conflicts by forcing the installation of all packages.
+
+### 2. Configure Environment Variables
+
+Create a `.env` file in the root directory of your project, and add the following line:
+
+```env
+VITE_GOOGLE_API_KEY=YOUR_GEMINI_API_KEY
+```
+
+> Replace `YOUR_GEMINI_API_KEY` with your actual Google Gemini API key.
+
+### 3. Run the Application
+
+Start the development server with the command:
+
+```bash
+npm run dev
+```
+
+Once the server is running, open your browser and go to the provided local URL ( `http://localhost:3000/`) to begin exploring the application.
+
+---
