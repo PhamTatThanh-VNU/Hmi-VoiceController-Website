@@ -11,7 +11,7 @@ if (recognition) {
   console.error("Speech Recognition is not supported in this browser.");
 }
 
-// Text-to-Speech function
+// Text-to-Speech and do actionCallBack
 export const speak = (message, onEndCallback) => {
   if (!message) return;
 
@@ -43,7 +43,9 @@ export const startRecognition = (onResultCallback, onErrorCallback) => {
     console.error("Speech Recognition is not supported in this browser.");
     return;
   }
-
+  console.log("Starting speech recognition...");
+  
+  // Define recognition
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
     if (onResultCallback) onResultCallback(transcript);
@@ -53,6 +55,7 @@ export const startRecognition = (onResultCallback, onErrorCallback) => {
     if (onErrorCallback) onErrorCallback(event.error);
   };
 
+  // Handel recognition
   recognition.start();
 };
 

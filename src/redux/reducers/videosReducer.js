@@ -15,6 +15,10 @@ const initialState = {
 
 const videosReducer = (state = initialState, action) => {
   switch (action.type) {
+    case SET_VIDEOS_LOADING:
+      state = { ...state, videosLoading: action.payload };
+      return state;
+
     case SET_VIDEOS:
       state = {
         ...state,
@@ -23,9 +27,7 @@ const videosReducer = (state = initialState, action) => {
         pageInfo: action.payload.pageInfo,
       };
       return state;
-    case SET_VIDEOS_LOADING:
-      state = { ...state, videosLoading: action.payload };
-      return state;
+    
     case SET_POPULAR_VIDEOS:
       state = { ...state, popularVideos: action.payload.items };
       return state;

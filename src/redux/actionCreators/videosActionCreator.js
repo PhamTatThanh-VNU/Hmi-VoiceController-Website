@@ -1,24 +1,27 @@
 import axios from 'axios';
 
-const setVideos = (data) => ({
-  type: 'SET_VIDEOS',
-  payload: data,
-});
 const setVideosLoading = (data) => ({
   type: 'SET_VIDEOS_LOADING',
   payload: data,
 });
+
+const setVideos = (data) => ({
+  type: 'SET_VIDEOS',
+  payload: data,
+});
+
 const setPopularUploads = (data) => ({
   type: 'SET_POPULAR_VIDEOS',
   payload: data,
 });
  
+// fetch videos from api 
 export const addVideos = () => (dispatch) => {
   dispatch(setVideosLoading(true));
   axios
     .get(import.meta.env.VITE_APP_Youtube_API, {
       params: {
-        channelId: 'UC3XkkDSSGqaBPimn22vCHDg',
+        channelId: 'UCA_23dkEYToAc37hjSsCnXA',
         order: 'date',
         part: 'snippet',
         type: 'video',
@@ -35,11 +38,13 @@ export const addVideos = () => (dispatch) => {
       dispatch(setVideosLoading(false));
     });
 };
+
+// fetch popular videos from api
 export const addPopularVideos = () => (dispatch) => {
   axios
     .get(import.meta.env.VITE_APP_Youtube_API, {
       params: {
-        channelId: 'UC3XkkDSSGqaBPimn22vCHDg',
+        channelId: 'UCA_23dkEYToAc37hjSsCnXA',
         order: 'viewCount',
         part: 'snippet',
         type: 'video',

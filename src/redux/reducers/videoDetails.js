@@ -1,7 +1,7 @@
 import {
   SET_VIDEO_DETAIL,
   SET_VIDEO_DETAIL_LOADING,
-} from "../actions/videoDetailAction";
+} from '../actions/videoDetailAction';
 
 const initialState = {
   videoDetailLoading: true,
@@ -16,9 +16,14 @@ const videoDetailReducer = (state = initialState, action) => {
         video: action.payload,
       };
       return state;
+
     case SET_VIDEO_DETAIL_LOADING:
-      state = { ...state, videoDetailLoading: action.payload };
+      state = {
+        ...state,
+        videoDetailLoading: action.payload,
+      };
       return state;
+
     default:
       return state;
   }

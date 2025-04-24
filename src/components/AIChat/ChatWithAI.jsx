@@ -47,7 +47,9 @@ const ChatWithAI = () => {
 
       recognition.onend = () => {
         console.log("Recognition ended. Restarting...");
-        recognition.start();
+        if (!isLoading && !window.speechSynthesis.speaking) {
+          recognition.start();
+        }
       };
     };
 
