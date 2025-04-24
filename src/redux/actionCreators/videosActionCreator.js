@@ -12,7 +12,7 @@ const setPopularUploads = (data) => ({
   type: 'SET_POPULAR_VIDEOS',
   payload: data,
 });
-
+ 
 export const addVideos = () => (dispatch) => {
   dispatch(setVideosLoading(true));
   axios
