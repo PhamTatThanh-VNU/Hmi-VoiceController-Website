@@ -168,28 +168,60 @@ const App = () => {
       speak("Trang này không tồn tại. Vui lòng nói 'quay lại' để trở về.");
     }
   };
-  // Xử lý sự kiện onresult của recognition
-  recognition.onresult = async (event) => {
-    const command = event.results[0][0].transcript.toLowerCase().replace(".", "");
-    console.log("Lệnh nhận được:", command);
 
-    if (command === "dừng nhận") {
-      toggleRecognition(false, null, null);
-      setIsRecognitionActive(false);
-      toast.dark("Đã dừng nhận lệnh!");
-      speak("Đã dừng nhận lệnh!");
-      return;
-    }
+  useEffect(() => {
+    if (!recognition) return;
+  
+    recognition.onresult = async (event) => {
+      const command = event.results[0][0].transcript.toLowerCase().replace(".", "").trim();
+      console.log("Lệnh nhận được:", command);
+  
+      if (command === "dừng nhận") {
+        toggleRecognition(false, null, null);
+        setIsRecognitionActive(false);
+        toast.dark("Đã dừng nhận lệnh!");
+        await speak("Đã dừng nhận lệnh!");
+        return;
+      }
+  
+      await handleVoiceCommand(command);
+    };
+  
+    recognition.onend = () => {
+      console.log("onend ở App");
+  
+      if (!isSpeaking && isRecognitionActive) {
+        console.log("Restart recognition sau onend");
+        toggleRecognition(true, null, null);
+      }
+    };
+  
+  }, [isRecognitionActive]);
+  
 
-    await handleVoiceCommand(command);
-  };
+  // // Xử lý sự kiện onresult của recognition
+  // recognition.onresult = async (event) => {
+  //   const command = event.results[0][0].transcript.toLowerCase().replace(".", "");
+  //   console.log("Lệnh nhận được:", command);
 
-  // Xử lý sự kiện onend của recognition
-  recognition.onend = () => {
-    if (!isSpeaking && isRecognitionActive) {
-      toggleRecognition(true, null, null);
-    }
-  };
+  //   if (command === "dừng nhận") {
+  //     toggleRecognition(false, null, null);
+  //     setIsRecognitionActive(false);
+  //     toast.dark("Đã dừng nhận lệnh!");
+  //     speak("Đã dừng nhận lệnh!");
+  //     return;
+  //   }
+
+  //   await handleVoiceCommand(command);
+  // };
+
+
+  // // Xử lý sự kiện onend của recognition
+  // recognition.onend = () => {
+  //   if (!isSpeaking && isRecognitionActive) {
+  //     toggleRecognition(true, null, null);
+  //   }
+  // };
 
   return (
     <div className="App">

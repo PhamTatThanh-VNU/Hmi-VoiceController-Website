@@ -3,31 +3,46 @@ const SpeechRecognition =
 
 export const recognition = SpeechRecognition ? new SpeechRecognition() : null;
 
+// --- Lưu callback riêng, không gán lại onresult ---
+let currentResultCallback = null;
+let currentErrorCallback = null;
+
 if (recognition) {
   recognition.lang = "vi-VN";
   recognition.interimResults = false;
   recognition.continuous = false;
+
+  // Định nghĩa onresult và onerror chỉ 1 lần duy nhất
+  recognition.onresult = (event) => {
+    console.log("recognition onresult ở voiceRecog.");
+    const transcript = event.results[0][0].transcript;
+    if (currentResultCallback) currentResultCallback(transcript);
+  };
+
+  recognition.onerror = (event) => {
+    console.log("recognition onerror ở voiceRecog.", event.error);
+    if (currentErrorCallback) currentErrorCallback(event.error);
+  };
 } else {
   console.error("Speech Recognition is not supported in this browser.");
 }
 
-// Text-to-Speech and do actionCallBack
+// Text-to-Speech
 export const speak = (message, onEndCallback) => {
   if (!message) return;
 
   const speech = new window.SpeechSynthesisUtterance(message);
   speech.lang = "vi-VN";
 
-  // Stop any ongoing speech
   window.speechSynthesis.cancel();
   if (recognition) {
     stopRecognition();
   }
-  // Speak the message
+
   window.speechSynthesis.speak(speech);
 
-  // Handle speech end
   speech.onend = () => {
+    console.log("Speech onend ở voiceRecog.");
     if (recognition) {
       recognition.start(); // Restart recognition after speaking
     }
@@ -44,18 +59,10 @@ export const startRecognition = (onResultCallback, onErrorCallback) => {
     return;
   }
   console.log("Starting speech recognition...");
-  
-  // Define recognition
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    if (onResultCallback) onResultCallback(transcript);
-  };
 
-  recognition.onerror = (event) => {
-    if (onErrorCallback) onErrorCallback(event.error);
-  };
+  currentResultCallback = onResultCallback;
+  currentErrorCallback = onErrorCallback;
 
-  // Handel recognition
   recognition.start();
 };
 
@@ -67,11 +74,7 @@ export const stopRecognition = () => {
 };
 
 // Utility to toggle Speech-to-Text
-export const toggleRecognition = (
-  isActive,
-  onResultCallback,
-  onErrorCallback
-) => {
+export const toggleRecognition = (isActive, onResultCallback, onErrorCallback) => {
   if (isActive) {
     startRecognition(onResultCallback, onErrorCallback);
   } else {
