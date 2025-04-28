@@ -7,6 +7,8 @@ import { toast, ToastContainer } from "react-toastify";
 import { routes } from "./constants";
 import ChatWithAI from "./components/AIChat/ChatWithAI";
 
+
+
 import Home from "./components/Home";
 import InstructionScreen from "./components/InstructionScreen";
 import Navbar from "./components/Navbar";
@@ -28,6 +30,7 @@ const App = () => {
   const [countPages, setCountPages] = useState(1);
   const [videoRef, setVideoRef] = useState();
   const [isSpeaking , setIsSpeaking] = useState(false);
+  const scrollInterval = useRef(null);
 
   const nameRef = useRef();
   const emailRef = useRef();
@@ -129,11 +132,19 @@ const App = () => {
       setIsSpeaking(true);
      await handleVideoControl(command);
      await speak("Đã xử lý video", () => setIsSpeaking(false));
-    } else if (command.includes("cuộn")) {
-       setIsSpeaking(true);
-     await handleScroll(command);
-     await speak("Đã cuộn trang", () => setIsSpeaking(false));
-    } else if (command.includes("tìm kiếm")) {
+    } else if (
+      command.includes("kéo") ||
+      command.includes("cuộn") ||
+      command.includes("dừng") ||
+      command.includes("ngưng") ||
+      command.includes("tạm dừng") ||
+      command.includes("stop")
+    ) {
+      setIsSpeaking(true);
+      await handleScroll(command);
+      await speak("Đã xử lý cuộn trang", () => setIsSpeaking(false));
+    }
+     else if (command.includes("tìm kiếm")) {
         setIsSpeaking(true);
         await handleSearch(command);
         await speak("Đã tìm kiếm", () => setIsSpeaking(false));
@@ -198,30 +209,77 @@ const App = () => {
   
   }, [isRecognitionActive]);
   
-
-  // // Xử lý sự kiện onresult của recognition
-  // recognition.onresult = async (event) => {
-  //   const command = event.results[0][0].transcript.toLowerCase().replace(".", "");
-  //   console.log("Lệnh nhận được:", command);
-
-  //   if (command === "dừng nhận") {
-  //     toggleRecognition(false, null, null);
-  //     setIsRecognitionActive(false);
-  //     toast.dark("Đã dừng nhận lệnh!");
-  //     speak("Đã dừng nhận lệnh!");
-  //     return;
-  //   }
-
-  //   await handleVoiceCommand(command);
-  // };
-
-
-  // // Xử lý sự kiện onend của recognition
-  // recognition.onend = () => {
-  //   if (!isSpeaking && isRecognitionActive) {
-  //     toggleRecognition(true, null, null);
-  //   }
-  // };
+  const handleScroll = async (command) => {
+    if (!command) return;
+  
+    const scrollOptions = { behavior: 'smooth' };
+    const maxScroll = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const lowerCaseCommand = command.toLowerCase();
+  
+    // Dừng cuộn
+    if (lowerCaseCommand.includes('dừng kéo') ||
+        lowerCaseCommand.includes('dừng lại') ||
+        lowerCaseCommand.includes('ngưng') ||
+        lowerCaseCommand.includes('stop') ||
+        lowerCaseCommand.includes('thôi') ||
+        lowerCaseCommand.includes('tạm dừng')) {
+      if (scrollInterval.current) {
+        clearInterval(scrollInterval.current);
+        scrollInterval.current = null;
+        console.log('🛑 Đã dừng cuộn trang!');
+      }
+      return;
+    }
+  
+    // Nếu đang có cuộn cũ thì dừng lại
+    if (scrollInterval.current) {
+      clearInterval(scrollInterval.current);
+      scrollInterval.current = null;
+    }
+  
+    // Cuối trang
+    if (lowerCaseCommand.includes('cuối trang')) {
+      window.scrollTo({ top: maxScroll, ...scrollOptions });
+      return;
+    }
+  
+    // Đầu trang
+    if (lowerCaseCommand.includes('đầu trang')) {
+      window.scrollTo({ top: 0, ...scrollOptions });
+      return;
+    }
+  
+    // Kéo xuống liên tục
+    if (lowerCaseCommand.includes('kéo xuống') || lowerCaseCommand.includes('cuộn xuống')) {
+      scrollInterval.current = setInterval(() => {
+        if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight) {
+          clearInterval(scrollInterval.current);
+          scrollInterval.current = null;
+          console.log('✅ Đã tới cuối trang!');
+          return;
+        }
+        window.scrollBy({ top: 10, behavior: 'smooth' });
+      }, 30);
+      return;
+    }
+  
+    // Kéo lên liên tục
+    if (lowerCaseCommand.includes('kéo lên') || lowerCaseCommand.includes('cuộn lên')) {
+      scrollInterval.current = setInterval(() => {
+        if (window.scrollY <= 0) {
+          clearInterval(scrollInterval.current);
+          scrollInterval.current = null;
+          console.log('✅ Đã tới đầu trang!');
+          return;
+        }
+        window.scrollBy({ top: -10, behavior: 'smooth' });
+      }, 30);
+      return;
+    }
+  
+    console.log('⚠️ Không nhận dạng được lệnh cuộn!');
+  };
+  
 
   return (
     <div className="App">
