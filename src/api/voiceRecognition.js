@@ -6,11 +6,18 @@ export const recognition = SpeechRecognition ? new SpeechRecognition() : null;
 // --- Lưu callback riêng, không gán lại onresult ---
 let currentResultCallback = null;
 let currentErrorCallback = null;
+let isRecognitionActive = false; // ✅ Thêm biến để kiểm soát trạng thái
 
 if (recognition) {
   recognition.lang = "vi-VN";
   recognition.interimResults = false;
   recognition.continuous = false;
+
+
+  recognition.onstart = () => {
+    console.log("recognition started ở voiceRecog.");
+    isRecognitionActive = true;
+  };
 
   // Định nghĩa onresult và onerror chỉ 1 lần duy nhất
   recognition.onresult = (event) => {
@@ -43,8 +50,9 @@ export const speak = (message, onEndCallback) => {
 
   speech.onend = () => {
     console.log("Speech onend ở voiceRecog.");
-    if (recognition) {
+    if (recognition && !isRecognitionActive) {
       recognition.start(); // Restart recognition after speaking
+      isRecognitionActive = true; // Cập nhật trạng thái
     }
     if (onEndCallback) {
       onEndCallback();
@@ -64,14 +72,15 @@ export const startRecognition = (onResultCallback, onErrorCallback) => {
   currentErrorCallback = onErrorCallback;
 
   recognition.start();
-};
+}
 
 // Stop Speech-to-Text
 export const stopRecognition = () => {
   if (recognition) {
     recognition.stop();
+    isRecognitionActive = false; // Cập nhật trạng thái
   }
-};
+}; 
 
 // Utility to toggle Speech-to-Text
 export const toggleRecognition = (isActive, onResultCallback, onErrorCallback) => {

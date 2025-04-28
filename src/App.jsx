@@ -190,7 +190,7 @@ const App = () => {
     recognition.onend = () => {
       console.log("onend ở App");
   
-      if (!isSpeaking && isRecognitionActive) {
+      if (!isSpeaking) {
         console.log("Restart recognition sau onend");
         toggleRecognition(true, null, null);
       }
