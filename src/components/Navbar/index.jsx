@@ -11,7 +11,7 @@ const Navbar = () => {
       <ul className="navbar-nav ms-auto me-5">
         <li className="nav-item">
           <NavLink exact to="/" className="nav-link">
-            Home
+            Trang chủ
           </NavLink>
         </li>
         <li className="nav-item">
@@ -31,7 +31,7 @@ const Navbar = () => {
         </li> */}
         <li className="nav-item">
           <NavLink to="/instruction" className="nav-link">
-          Instruction
+          Hướng dẫn
           </NavLink>
         </li>
         <li className="nav-item ms-5">

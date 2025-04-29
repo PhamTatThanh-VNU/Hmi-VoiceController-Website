@@ -8,8 +8,8 @@ import './style.css';
 const PopUp = ({ setPopUp, setIsRecognitionActive }) => {
   const handleStart = async () => {
     setPopUp(false);
-    toast.dark('Hãy bắt đầu ra lệnh bằng giọng nói của bạn');
-    await speak('Hãy bắt đầu ra lệnh bằng giọng nói của bạn');
+    toast.dark('Hãy ra lệnh bằng giọng nói');
+    await speak('Hãy ra lệnh bằng giọng nói');
     setIsRecognitionActive(true);
   };
 

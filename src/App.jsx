@@ -80,14 +80,6 @@ const App = () => {
         .trim();
       console.log('Lệnh nhận được:', command);
 
-      if (command === 'dừng nhận') {
-        toggleRecognition(false, null, null);
-        setIsRecognitionActive(false);
-        toast.dark('Đã dừng nhận lệnh!');
-        await speak('Đã dừng nhận lệnh!');
-        return;
-      }
-
       await handleVoiceCommand(command);
     };
 
@@ -143,7 +135,7 @@ const App = () => {
       await handleFormFilling(command);
       await speak('Đã gửi biểu mẫu', () => setIsSpeaking(false));
     } else {
-      await speak('Lệnh không hợp lệ. Vui lòng thử lại.', () =>
+      await speak('Lệnh không hợp lệ', () =>
         setIsSpeaking(false)
       );
     }
@@ -185,29 +177,38 @@ const App = () => {
 
   // Hàm điều hướng tới trang
   const handleNavigation = async (command) => {
-    let pageName = command.replace('đi tới', '').trim();
-
-    if (pageName.includes('trang chủ')) pageName = 'home';
-    else if (pageName.includes('tìm kiếm')) pageName = 'search';
-    else if (pageName.includes('trò chuyện')) pageName = 'chat';
-    else if (pageName.includes('liên hệ')) pageName = 'contact';
-    else if (pageName.includes('hướng dẫn')) pageName = 'instruction';
-    else pageName = pageName.split(' ').pop();
-
-    if (routes.includes(pageName.toLowerCase())) {
-      if (pageName === 'search') {
+    let pageName = command.replace('đi tới', '').trim().toLowerCase();
+  
+    // Map các từ tiếng Việt người dùng nói thành route chuẩn
+    const pageMapping = {
+      'trang chủ': '/',
+      'home': '/',
+      'video': '/videos',
+      'tìm kiếm': '/search',
+      'search': '/search',
+      'trò chuyện': '/chat',
+      'chat': '/chat',
+      'liên hệ': '/contact',
+      'hướng dẫn': '/instruction',
+      'instruction': '/instruction',
+    };
+  
+    const matchedRoute = pageMapping[pageName];
+  
+    if (matchedRoute) {
+      if (matchedRoute === '/search') {
         history.push({ pathname: '/search', state: { text: '' } });
-        await speak('Bạn muốn tìm kiếm gì? Hãy nói tìm kiếm kèm từ khóa.');
+        await speak('Bạn muốn tìm kiếm gì? Hãy nói tìm kiếm cộng từ khoá.');
       } else {
-        history.push(pageName === 'home' ? '/' : `/${pageName}`);
-        await speak(`Đã chuyển tới trang ${pageName}`);
+        history.push(matchedRoute);
+        await speak(`Đã chuyển tới ${pageName}`);
       }
     } else {
-      history.push(`/${pageName}`);
       await speak('Trang này không tồn tại. Vui lòng thử lệnh khác.');
     }
   };
-
+  
+  
   const handleScroll = async (command) => {
     if (!command) return;
 
