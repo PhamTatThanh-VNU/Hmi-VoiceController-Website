@@ -11,7 +11,7 @@ const Page404 = () => {
 
   return (
     <h1 className="display-1 text-center my-5">
-      404 Page not found - say `go back`
+      404 Page not found - say `quay lại`
     </h1>
   );
 };

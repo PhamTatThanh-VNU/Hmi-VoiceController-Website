@@ -25,7 +25,7 @@ export const addVideos = () => (dispatch) => {
         order: 'date',
         part: 'snippet',
         type: 'video',
-        maxResults: 25,
+        maxResults: 36,
         key: import.meta.env.VITE_APP_Youtube_API_Key,
       },
     })
@@ -48,7 +48,7 @@ export const addPopularVideos = () => (dispatch) => {
         order: 'viewCount',
         part: 'snippet',
         type: 'video',
-        maxResults: 25,
+        maxResults: 36,
         key: import.meta.env.VITE_APP_Youtube_API_Key,
       },
     })

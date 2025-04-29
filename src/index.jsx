@@ -15,12 +15,14 @@ import videosReducer from './redux/reducers/videosReducer';
 import { composeWithDevTools } from '@redux-devtools/extension';
 import { thunk } from 'redux-thunk';
 import videoDetailReducer from './redux/reducers/videoDetails';
+import searchResultReducer from './redux/reducers/searchResultReducer'; 
 
 import 'react-toastify/dist/ReactToastify.css';
 
 const reducers = combineReducers({
   videos: videosReducer,
   videoDetail: videoDetailReducer,
+  searchResult: searchResultReducer,
 });
 
 const store = createStore(

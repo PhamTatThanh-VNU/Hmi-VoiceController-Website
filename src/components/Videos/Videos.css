@@ -1,0 +1,124 @@
+/* ====== layout ====== */
+.videos {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  font-family: inherit;
+}
+
+.videos__heading {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.videos__loading {
+  text-align: center;
+  font-size: 1.5rem;
+}
+
+/* grid of cards */
+.videos__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ====== individual card ====== */
+.video-card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  height: 100%;
+}
+
+/* thumbnail + index badge */
+.video-card__thumb-wrap {
+  position: relative;
+}
+
+.video-card__thumb {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.video-card__index {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: #ff304f;
+  color: #fff;
+  font-size: 0.85rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* body */
+.video-card__body {
+  padding: 1rem 1rem 0.5rem;
+  flex: 1;                          /* đẩy footer xuống dưới */
+}
+
+.video-card__title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+.video-card__desc {
+  font-size: 0.875rem;
+  color: #555;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;            /* cắt 3 dòng */
+  -webkit-box-orient: vertical;
+}
+
+/* link button */
+.video-card__button {
+  display: block;
+  text-align: center;
+  background: #007bff;
+  color: #fff;
+  padding: 0.6rem;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.video-card__button:hover {
+  background: #0062d6;
+}
+
+/* ====== pagination ====== */
+.videos__pagination {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.videos__btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.videos__btn:disabled {
+  background: #b6c9f5;
+  cursor: default;
+}
+
+.videos__btn:not(:disabled):hover {
+  background: #0062d6;
+}
