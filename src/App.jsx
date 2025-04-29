@@ -26,7 +26,7 @@ const App = () => {
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(12);
   const [countPages, setCountPages] = useState(1);
-  const [videoRef, setVideoRef] = useState();
+  const videoRef = useRef(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const scrollInterval = useRef(null);
 
@@ -132,13 +132,15 @@ const App = () => {
       await speak('Đã mở video', () => setIsSpeaking(false));
     } else if (
       command.includes('phát video') ||
-      command.includes('tạm dừng video')
+      command.includes('tạm dừng video') ||
+      command.includes('tua') ||
+      command.includes('tour')
     ) {
       setIsSpeaking(true);
       await handleVideoControl(command);
       await speak('Đã xử lý video', () => setIsSpeaking(false));
     } else if (
-      command.includes('kéo') 
+      command.includes('kéo')
       // command.includes('cuộn') ||
       // command.includes('dừng') ||
       // command.includes('ngưng') ||
@@ -358,6 +360,59 @@ const App = () => {
     history.push(`/video/${targetVideo.id.videoId}`);
   };
 
+  const handleVideoControl = (command) => {
+    const player = videoRef.current;
+    if (!player) {
+      speak('Chưa có video nào đang phát.');
+      return;
+    }
+
+    const lc = command.toLowerCase().trim();
+
+    /* ───────── 1. Phát / tiếp tục ───────── */
+    if (/(phát\s+(video|tiếp)|tiếp tục)/.test(lc)) {
+      player.playVideo();
+      return;
+    }
+
+    /* ───────── 2. Tạm dừng ───────── */
+    if (/(tạm\s*dừng|pause|dừng\s+video)/.test(lc)) {
+      player.pauseVideo();
+      return;
+    }
+
+    /* ─────── 3. Tua video ─────── */
+    if (lc.includes('tua') || lc.includes('tour')) {
+      /* Bước 3-1. Số giây (hoặc phút) cần tua */
+      const foundNumber = lc.match(/\d+/); // tìm số trong câu
+      let seconds = foundNumber
+        ? +foundNumber[0] // có số → dùng
+        : 10; // không số → 10s mặc định
+
+      /* Nếu người dùng nói “phút” → đổi sang giây */
+      if (lc.includes('phút')) seconds *= 60;
+
+      /* Bước 3-2. Quyết định hướng tua */
+      const isForward = /(tới|nhanh|trước|lên)/.test(lc); // tua tới
+      const isBackward = /(lùi|về|lại|xuống)/.test(lc); // tua lùi
+
+      const now = player.getCurrentTime();
+      let targetTime = now;
+
+      if (isForward) targetTime = now + seconds;
+      else if (isBackward) targetTime = now - seconds;
+      else targetTime = now + seconds; // không nói rõ → tua tới
+
+      if (targetTime < 0) targetTime = 0;
+
+      player.seekTo(targetTime, true);
+      return;
+    }
+
+    /* ───────── 4. Lệnh không khớp ───────── */
+    speak('Không nhận dạng được lệnh điều khiển video.');
+  };
+
   return (
     <div className="App">
       <ToastContainer />
@@ -421,8 +476,9 @@ const App = () => {
           <Home />
         </Route>
         <Route exact path="/video/:id">
-          <CurrentVideo setVideoRef={setVideoRef} />
+          <CurrentVideo setVideoRef={(player) => (videoRef.current = player)} />
         </Route>
+
         <Route
           path="/videos"
           component={() => (
