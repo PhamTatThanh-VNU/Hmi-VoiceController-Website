@@ -1,3 +1,28 @@
+# 🎤 Voice Command YouTube Controller
+
+A voice-controlled web interface that lets users **watch YouTube videos** and navigate the site using **Vietnamese voice commands** — completely **hands-free**.
+
+## 🚀 Overview
+
+This project enables natural voice interaction for:
+- Playing and controlling YouTube videos
+- Navigating between pages
+- Scrolling up/down
+- Selecting videos
+- Performing searches
+
+All without touching a mouse or keyboard.
+---
+
+## 🧩 Technologies Used
+
+- ⚛️ **ReactJS** – modern UI framework
+- 🗣️ **Web Speech API** – voice recognition in Vietnamese
+- 🔊 **SpeechSynthesis API** – voice feedback for user responses
+- 🔄 **React Router** – client-side routing
+- 💡 **Custom NLP logic** – to interpret and match voice input
+
+
 ## 📦 Requirements
 
 - [Node.js](https://nodejs.org/) must be installed on your system.
@@ -21,7 +46,10 @@ npm install --force
 Create a `.env` file in the root directory of your project, and add the following line:
 
 ```env
-VITE_GOOGLE_API_KEY=YOUR_GEMINI_API_KEY
+VITE_GOOGLE_API_KEY = AIzayt3f...
+VITE_APP_Youtube_API_Key = AIza....
+VITE_APP_Youtube_API = https://www.googleapis.com/youtube/v3/search
+
 ```
 
 > Replace `YOUR_GEMINI_API_KEY` with your actual Google Gemini API key.
