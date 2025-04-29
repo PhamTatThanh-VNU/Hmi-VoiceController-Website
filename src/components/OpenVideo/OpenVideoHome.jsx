@@ -7,7 +7,7 @@ const OpenVideoHome = ({ setOpenVideoHome, selectedVideos }) => {
       <div className="w-50 h-auto bg-white rounded shadow">
         <div className="openVideoHomeHeader d-flex align-items-center justify-content-between w-100 py-3 px-5 border-bottom">
           <p className="h3">Select Video</p>
-          <i
+          <i 
             className="fas fa-times"
             style={{ cursor: "pointer" }}
             onClick={() => setOpenVideoHome(false)}

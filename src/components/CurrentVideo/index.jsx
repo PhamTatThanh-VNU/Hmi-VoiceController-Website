@@ -3,24 +3,30 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams } from "react-router-dom";
 import YouTube from "react-youtube";
 import { addVideoDetail } from "../../redux/actionCreators/videoDetailActionCreator";
+ 
+import "./CurrentVideo.css";
 
 const CurrentVideo = ({ setVideoRef }) => {
   const { id } = useParams();
-  const { videoDeatilLoading, videoDetail, videosAll, videosLoading } =
-    useSelector((state) => ({
+  const dispatch = useDispatch();
+
+  const { videoDeatilLoading, videoDetail, videosAll, videosLoading } = useSelector(
+    (state) => ({
       videoDeatilLoading: state.videoDetail.videoDetailLoading,
       videoDetail: state.videoDetail.video,
       videosAll: state.videos.videos,
       videosLoading: state.videos.videosLoading,
-    }));
+    })
+  );
 
-  const videos = videosAll.filter((video) => video.id.videoId !== id && video);
+  const relatedVideos = videosAll.filter((video) => video.id.videoId !== id);
 
-  const dispatch = useDispatch();
+  // Auto scroll lên đầu trang + fetch detail mỗi khi id thay đổi
+useEffect(() => {
+  window.scrollTo({ top: 0, behavior: "smooth" });   // cuộn mượt; bỏ behavior nếu muốn ngay lập tức
+  dispatch(addVideoDetail(id));
+}, [dispatch, id]);
 
-  useEffect(() => {
-    dispatch(addVideoDetail(id));
-  }, [dispatch, id]);
 
   const opts = {
     height: "580",
@@ -31,90 +37,67 @@ const CurrentVideo = ({ setVideoRef }) => {
   };
 
   return (
-    <div className="container-fluid">
-      <div className="row m-5">
-        <div className="col-md-10 mx-auto">
-          {videoDeatilLoading ? (
-            "Loading"
-          ) : (
-            <>
-              <div className="card  mb-3">
-                <YouTube
-                  videoId={id}
-                  opts={opts}
-                  onReady={(event) => setVideoRef(event.target)}
-                />
-                <div className="card-body px-5">
-                  <div className="d-flex w-100 align-items-center justify-content-between">
-                    <p>{videoDetail.items[0].statistics.viewCount} Views</p>
-                    <div className="d-flex">
-                      <p className="mr-3">
-                        <i className="fa fa-thumbs-up"></i>{" "}
-                        {videoDetail.items[0].statistics.likeCount}
-                      </p>
-                      <p>
-                        <i className="fa fa-thumbs-down"></i>{" "}
-                        {videoDetail.items[0].statistics.dislikeCount}
-                      </p>
-                    </div>
-                  </div>
-                  <h5 className="card-title py-2">
-                    {videoDetail.items[0].snippet.title}
-                  </h5>
-                  <p className="card-text py-2">
-                    {videoDetail.items[0].snippet.description}
-                  </p>
-                  <p className="comments">
-                    {videoDetail.items[0].statistics.commentCount} Comments
-                  </p>
-                </div>
-                <div className="card-footer d-flex flex-wrap text-justify px-5 bg-white border-0">
-                  {videoDetail.items[0].snippet.tags.map((tag, id) => (
-                    <p
-                      className="bg-secondary py-1 px-2 mr-2 text-white"
-                      key={id + 456}
-                    >
-                      {tag}
-                    </p>
-                  ))}
+    <div className="current-video-container">
+      <div className="main-video-section">
+        {videoDeatilLoading ? (
+          <div className="loading">Loading...</div>
+        ) : (
+          <div className="main-video-card">
+            <YouTube
+              videoId={id}
+              opts={opts}
+              onReady={(event) => setVideoRef(event.target)}
+            />
+            <div className="video-details">
+              <div className="stats">
+                <p>{videoDetail.items[0].statistics.viewCount} Views</p>
+                <div className="likes-dislikes">
+                  <p><i className="fa fa-thumbs-up"></i> {videoDetail.items[0].statistics.likeCount}</p>
+                  <p><i className="fa fa-thumbs-down"></i> {videoDetail.items[0].statistics.dislikeCount}</p>
                 </div>
               </div>
-            </>
-          )}
-        </div>
+              <h2>{videoDetail.items[0].snippet.title}</h2>
+              <p>{videoDetail.items[0].snippet.description}</p>
+              <p className="comments-count">{videoDetail.items[0].statistics.commentCount} Comments</p>
+            </div>
+            <div className="video-tags">
+              {videoDetail.items[0].snippet.tags.map((tag, idx) => (
+                <span key={idx} className="tag">{tag}</span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-      <p className="display-3 text-center d-block py-4 border-bottom border-dark">
-        Related Videos
-      </p>
-      <div className="row mx-auto">
-        {videosLoading
-          ? "Loading"
-          : videos.map((video, id) => (
-              <div className="card px-0 col-md-4 mb-3" key={id + 250}>
+
+      <h3 className="related-title">Related Videos</h3>
+
+      <div className="related-videos-grid">
+        {videosLoading ? (
+          <div className="loading">Loading...</div>
+        ) : (
+          relatedVideos.map((video, idx) => (
+            <div className="related-video-card" key={idx}>
+              <div className="thumbnail-wrapper">
                 <img
-                  className="card-img-top"
                   src={video.snippet.thumbnails.high.url}
                   alt={video.snippet.title}
-                  height={video.snippet.thumbnails.high.height}
+                  className="related-thumbnail"
                 />
-                <div className="card-body">
-                  <h5 className="card-title text-justify">
-                    {video.snippet.title}
-                  </h5>
-                  <p className="card-text text-justify">
-                    {video.snippet.description}
-                  </p>
-                </div>
-                <div className="card-footer bg-white">
-                  <Link
-                    to={`/video/${video.id.videoId}`}
-                    className="btn btn-primary btn-block"
-                  >
-                    <i className="fa fa-eye"></i> See Video
-                  </Link>
-                </div>
+                <div className="video-index">{idx + 1}</div> {/* 🎯 Số thứ tự nằm trên ảnh */}
               </div>
-            ))}
+
+              <div className="related-info">
+                <h4 className="related-title">{video.snippet.title}</h4>
+                <p className="related-description">{video.snippet.description}</p>
+              </div>
+              <div className="related-footer">
+                <Link to={`/video/${video.id.videoId}`} className="view-button">
+                  <i className="fa fa-eye"></i> Watch Video
+                </Link>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
