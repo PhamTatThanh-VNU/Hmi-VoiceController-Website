@@ -24,9 +24,14 @@ const Navbar = () => {
             Trò chuyện
           </NavLink>
         </li>
-        <li className="nav-item">
+        {/* <li className="nav-item">
           <NavLink to="/contact" className="nav-link">
             Contact
+          </NavLink>
+        </li> */}
+        <li className="nav-item">
+          <NavLink to="/instruction" className="nav-link">
+          Instruction
           </NavLink>
         </li>
         <li className="nav-item ms-5">
