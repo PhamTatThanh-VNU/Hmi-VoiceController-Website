@@ -135,9 +135,7 @@ const App = () => {
       await handleFormFilling(command);
       await speak('Đã gửi biểu mẫu', () => setIsSpeaking(false));
     } else {
-      await speak('Lệnh không hợp lệ', () =>
-        setIsSpeaking(false)
-      );
+      await speak('Lệnh không hợp lệ', () => setIsSpeaking(false));
     }
   };
 
@@ -178,23 +176,23 @@ const App = () => {
   // Hàm điều hướng tới trang
   const handleNavigation = async (command) => {
     let pageName = command.replace('đi tới', '').trim().toLowerCase();
-  
+
     // Map các từ tiếng Việt người dùng nói thành route chuẩn
     const pageMapping = {
       'trang chủ': '/',
-      'home': '/',
-      'video': '/videos',
+      home: '/',
+      video: '/videos',
       'tìm kiếm': '/search',
-      'search': '/search',
+      search: '/search',
       'trò chuyện': '/chat',
-      'chat': '/chat',
+      chat: '/chat',
       'liên hệ': '/contact',
       'hướng dẫn': '/instruction',
-      'instruction': '/instruction',
+      instruction: '/instruction',
     };
-  
+
     const matchedRoute = pageMapping[pageName];
-  
+
     if (matchedRoute) {
       if (matchedRoute === '/search') {
         history.push({ pathname: '/search', state: { text: '' } });
@@ -207,8 +205,7 @@ const App = () => {
       await speak('Trang này không tồn tại. Vui lòng thử lệnh khác.');
     }
   };
-  
-  
+
   const handleScroll = async (command) => {
     if (!command) return;
 
