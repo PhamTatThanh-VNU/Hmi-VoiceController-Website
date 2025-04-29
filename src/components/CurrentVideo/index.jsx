@@ -10,13 +10,19 @@ const CurrentVideo = ({ setVideoRef }) => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  const { videoDeatilLoading, videoDetail, videosAll, videosLoading } =
-    useSelector((state) => ({
-      videoDeatilLoading: state.videoDetail.videoDetailLoading,
-      videoDetail: state.videoDetail.video,
-      videosAll: state.videos.videos,
-      videosLoading: state.videos.videosLoading,
-    }));
+  // const { videoDeatilLoading , videoDetail, videosAll, videosLoading } =
+  //   useSelector((state) => ({
+  //     videoDeatilLoading: state.videoDetail.videoDetailLoading,
+  //     videoDetail: state.videoDetail.video,
+  //     videosAll: state.videos.videos,
+  //     videosLoading: state.videos.videosLoading,
+  //   }));
+
+const videoDeatilLoading  = useSelector((state) => state.videoDetail.videoDetailLoading);
+const videoDetail = useSelector((state) => state.videoDetail.video);
+const videosAll = useSelector((state) => state.videos.videos);
+const videosLoading = useSelector((state) => state.videos.videosLoading);
+
 
   const relatedVideos = videosAll.filter((video) => video.id.videoId !== id);
   

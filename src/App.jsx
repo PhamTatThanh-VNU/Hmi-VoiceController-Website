@@ -101,10 +101,10 @@ const App = () => {
     if (command.includes('đi tới')) {
       await speak('Đang điều hướng...', () => setIsSpeaking(false));
       await handleNavigation(command);
-    } else if (command === 'quay lại') {
+    } else if (command.includes('quay lại') ) {
       history.goBack();
       await speak('Đang quay lại', () => setIsSpeaking(false));
-    } else if (command === 'tiến tới') {
+    } else if (command.includes('tiến tới')) {
       history.goForward();
       await speak('Đang tiến tới', () => setIsSpeaking(false));
     } else if (command.includes('mở video')) {
