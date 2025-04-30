@@ -5,7 +5,6 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { recognition, speak, toggleRecognition } from './api/voiceRecognition';
 import { addVideos } from './redux/actionCreators/videosActionCreator';
-import { routes } from './constants';
 
 import Home from './components/Home';
 import Navbar from './components/Navbar';
@@ -34,26 +33,15 @@ const App = () => {
 
   const videoRef = useRef(null);
   const scrollInterval = useRef(null);
-  const nameRef = useRef();
-  const emailRef = useRef();
-  const messageRef = useRef();
-  const submitRef = useRef();
-
-  const [newName, setNewName] = useState('');
-  const [newEmail, setNewEmail] = useState('');
-  const [newMessage, setNewMessage] = useState('');
 
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { videosLoading, videos, popularVideos, searchResults } = useSelector(
-    (state) => ({
-      videosLoading: state.videos.videosLoading,
-      videos: state.videos.videos,
-      popularVideos: state.videos.popularVideos,
-      searchResults: state.searchResult.searchResults,
-    }),
-    shallowEqual
+  const videosLoading = useSelector((state) => state.videos.videosLoading);
+  const videos = useSelector((state) => state.videos.videos);
+  const popularVideos = useSelector((state) => state.videos.popularVideos);
+  const searchResults = useSelector(
+    (state) => state.searchResult.searchResults
   );
 
   // 2.2 USEEFFECT =================================================================================
@@ -91,6 +79,12 @@ const App = () => {
       }
     };
   }, [isRecognitionActive]);
+
+  const searchResultsRef = useRef([]);
+
+  useEffect(() => {
+    searchResultsRef.current = searchResults;
+  }, [searchResults]);
 
   // 2.3 HANDLE FUNCTIONS ==========================================================================
   // Hàm xử lý lệnh giọng nói
@@ -131,9 +125,6 @@ const App = () => {
     } else if (lowerCommand.includes('tìm kiếm')) {
       await handleSearch(command);
       await speak('Đã tìm kiếm', () => setIsSpeaking(false));
-    } else if (lowerCommand.includes('gửi biểu mẫu')) {
-      await handleFormFilling(command);
-      await speak('Đã gửi biểu mẫu', () => setIsSpeaking(false));
     } else {
       await speak('Lệnh không hợp lệ', () => setIsSpeaking(false));
     }
@@ -291,47 +282,41 @@ const App = () => {
   };
 
   const handleVideoSelection = async (command) => {
-    /* === 1. Lấy số thứ tự ================================================================================= */
     const num = command.match(/\d+/);
     if (!num) {
       speak('Bạn chưa nói số thứ tự của video.');
       return;
     }
     const n = parseInt(num[0], 10);
-
-    const path = history.location.pathname; // ví dụ "/", "/videos", "/video/abc"
+    const path = history.location.pathname;
     let target = null;
 
-    /* === 2. Trang /video/:id  (Related Videos) ============================================================ */
     if (path.startsWith('/video/')) {
       const currentId = path.split('/')[2];
-      const related = videos.filter((v) => v.id.videoId !== currentId); // cùng nguồn dữ liệu redux
-
+      const related = videos.filter((v) => v.id.videoId !== currentId);
       if (n < 1 || n > related.length) {
         speak('Không có video tương ứng trong danh sách gợi ý.');
         return;
       }
       target = related[n - 1];
     } else if (path.startsWith('/videos')) {
-      /* === 3. Trang /videos  (Danh sách 12 video mỗi trang) ================================================= */
-      const pageList = videos.slice(start, end); // 12 video hiện tại
-      if (n < 1 || n > pageList.length) {
-        speak('Số thứ tự vượt quá số video trên trang.');
+      const globalIndex = start + (n - 1);
+      if (globalIndex < 0 || globalIndex >= videos.length) {
+        speak('Số thứ tự vượt quá tổng số video.');
         return;
       }
-      target = pageList[n - 1];
+      target = videos[globalIndex];
     } else if (path.startsWith('/search')) {
-      /* === 4. Trang /search  (Danh sách 12 video mỗi trang) ================================================= */
-      const searchList = searchResults;
-      if (n < 1 || n > searchList.length) {
+      console.log('📦 searchResults:', searchResults);
+      if (n < 1 || n > searchResults.length) {
         speak('Số thứ tự vượt quá số video trên trang.');
         return;
       }
-      target = searchList[n - 1];
+      target = searchResults[n - 1];
+
     } else {
-      /* === 5. Trang Home  (/ hoặc /home) ==================================================================== */
+      // Trang Home
       if (n % 2 === 1) {
-        /* số lẻ ⇒ Uploads */
         const idx = (n - 1) / 2;
         if (idx >= videos.length) {
           speak('Không có video tương ứng.');
@@ -339,7 +324,6 @@ const App = () => {
         }
         target = videos[idx];
       } else {
-        /* số chẵn ⇒ Popular Uploads */
         const idx = n / 2 - 1;
         if (idx >= popularVideos.length) {
           speak('Không có video tương ứng.');
@@ -349,8 +333,12 @@ const App = () => {
       }
     }
 
-    /* === 6. Điều hướng ==================================================================================== */
-    history.push(`/video/${target.id.videoId}`);
+    console.log('🎯 target video', target);
+    if (target?.id?.videoId) {
+      history.push(`/video/${target.id.videoId}`);
+    } else {
+      speak('Không thể mở video. Định dạng video không hợp lệ.');
+    }
   };
 
   const handleVideoControl = (command) => {
@@ -375,32 +363,35 @@ const App = () => {
     }
 
     /* ─────── 3. Tua video ─────── */
-    if (lc.includes('tua') || lc.includes('tour')) {
-      /* Bước 3-1. Số giây (hoặc phút) cần tua */
-      const foundNumber = lc.match(/\d+/); // tìm số trong câu
-      let seconds = foundNumber
-        ? +foundNumber[0] // có số → dùng
-        : 10; // không số → 10s mặc định
-
-      /* Nếu người dùng nói “phút” → đổi sang giây */
+    if (lc.includes('tua') || lc.includes('tour') || lc.includes('tu') || lc.includes('to')) {
+      const foundNumber = lc.match(/\d+/);
+      let seconds = foundNumber ? +foundNumber[0] : 10;
       if (lc.includes('phút')) seconds *= 60;
-
-      /* Bước 3-2. Quyết định hướng tua */
-      const isForward = /(tới|nhanh|trước|lên)/.test(lc); // tua tới
-      const isBackward = /(lùi|về|lại|xuống)/.test(lc); // tua lùi
-
-      const now = player.getCurrentTime();
-      let targetTime = now;
-
-      if (isForward) targetTime = now + seconds;
-      else if (isBackward) targetTime = now - seconds;
-      else targetTime = now + seconds; // không nói rõ → tua tới
-
-      if (targetTime < 0) targetTime = 0;
-
+    
+      const isForward = /(tới|nhanh|trước|lên)/.test(lc);
+      const isBackward = /(lùi|về|lại|xuống)/.test(lc);
+    
+      const now = player.getCurrentTime?.();
+      if (typeof now !== 'number') {
+        speak('Không thể lấy thời gian hiện tại của video.');
+        return;
+      }
+    
+      let targetTime = isForward
+        ? now + seconds
+        : isBackward
+        ? now - seconds
+        : now + seconds;
+    
+      if (!player.seekTo || typeof player.seekTo !== 'function') {
+        speak('Không thể tua video lúc này. Vui lòng thử lại.');
+        return;
+      }
+    
+      targetTime = Math.max(0, targetTime);
       player.seekTo(targetTime, true);
-      return;
     }
+    
 
     /* ───────── 4. Lệnh không khớp ───────── */
     speak('Không nhận dạng được lệnh điều khiển video.');
@@ -443,77 +434,11 @@ const App = () => {
     setCountPages((prev) => prev + 1);
   };
 
-  // Gửi biểu mẫu
-  const submitForm = (e) => {
-    e.preventDefault();
-    if (
-      !nameRef.current.value ||
-      !emailRef.current.value ||
-      !messageRef.current.value
-    ) {
-      toast.dark('Vui lòng điền đầy đủ các trường!');
-      speak('Vui lòng điền đầy đủ các trường!');
-      return;
-    }
-    const data = {
-      name: nameRef.current.value,
-      email: nameRef.current.value,
-      message: messageRef.current.value,
-    };
-    console.log(data);
-    speak('Biểu mẫu đã được gửi!');
-    speak('Cảm ơn bạn đã gửi thông tin!');
-  };
 
   // 2.4 JSX =======================================================================================
   return (
     <div className="App">
       <ToastContainer />
-
-      {/* Floating buttons */}
-      {/* <div
-        className="d-flex flex-column align-items-center justify-content-center position-fixed"
-        style={{ zIndex: 99999, bottom: '5%', right: '30px' }}
-      >
-        <button
-          type="button"
-          onClick={() => {
-            if (!isSpeaking) {
-              setIsRecognitionActive((prev) => !prev);
-              toggleRecognition(!isRecognitionActive, null, null);
-              toast.dark(
-                isRecognitionActive
-                  ? 'Đã dừng nhận lệnh!'
-                  : 'Bây giờ bạn có thể ra lệnh!'
-              );
-            } else {
-              toast.dark('Không thể bật nhận diện khi đang nói!');
-            }
-          }}
-          className={`btn rounded-circle my-2 shadow ${
-            isRecognitionActive ? 'btn-primary' : 'btn-danger'
-          }`}
-        >
-          {isRecognitionActive ? (
-            <i className="fa fa-microphone"></i>
-          ) : (
-            <i className="fa fa-microphone-slash"></i>
-          )}
-        </button>
-
-        <button
-          type="button"
-          className="btn rounded-circle my-2 shadow btn-primary"
-          onClick={() => {
-            setPopUp(true);
-            setIsRecognitionActive(false);
-            toggleRecognition(false, null, null);
-            toast.dark('Nhấn nút tiếp theo hoặc đóng để tiếp tục!');
-          }}
-        >
-          <i className="fa fa-table"></i>
-        </button>
-      </div> */}
 
       {popUp && (
         <PopUp
@@ -544,18 +469,6 @@ const App = () => {
           />
         </Route>
         <Route path="/chat" component={ChatWithAI} />
-        <Route path="/contact">
-          <Contact
-            nameRef={nameRef}
-            emailRef={emailRef}
-            messageRef={messageRef}
-            submitRef={submitRef}
-            newName={newName}
-            newEmail={newEmail}
-            newMessage={newMessage}
-            submitForm={submitForm}
-          />
-        </Route>
         <Route path="/instruction" component={InstructionScreen} />
         <Route path="/search">
           <Search setIsRecognitionActive={setIsRecognitionActive} />
