@@ -14,7 +14,6 @@ import CurrentVideo from './components/CurrentVideo';
 import Videos from './components/Videos';
 import Search from './components/Search';
 import ChatWithAI from './components/AIChat/ChatWithAI';
-import Contact from './components/Contact/Contact';
 import InstructionScreen from './components/InstructionScreen';
 import Page404 from './components/Page404';
 
@@ -177,7 +176,6 @@ const App = () => {
       search: '/search',
       'trò chuyện': '/chat',
       chat: '/chat',
-      'liên hệ': '/contact',
       'hướng dẫn': '/instruction',
       instruction: '/instruction',
     };
@@ -367,31 +365,31 @@ const App = () => {
       const foundNumber = lc.match(/\d+/);
       let seconds = foundNumber ? +foundNumber[0] : 10;
       if (lc.includes('phút')) seconds *= 60;
-    
+
       const isForward = /(tới|nhanh|trước|lên)/.test(lc);
       const isBackward = /(lùi|về|lại|xuống)/.test(lc);
-    
+
       const now = player.getCurrentTime?.();
       if (typeof now !== 'number') {
         speak('Không thể lấy thời gian hiện tại của video.');
         return;
       }
-    
+
       let targetTime = isForward
         ? now + seconds
         : isBackward
-        ? now - seconds
-        : now + seconds;
-    
+          ? now - seconds
+          : now + seconds;
+
       if (!player.seekTo || typeof player.seekTo !== 'function') {
         speak('Không thể tua video lúc này. Vui lòng thử lại.');
         return;
       }
-    
+
       targetTime = Math.max(0, targetTime);
       player.seekTo(targetTime, true);
     }
-    
+
 
     /* ───────── 4. Lệnh không khớp ───────── */
     speak('Không nhận dạng được lệnh điều khiển video.');
