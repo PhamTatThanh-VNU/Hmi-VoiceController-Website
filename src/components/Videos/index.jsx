@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, shallowEqual } from "react-redux";
 import { Link } from "react-router-dom";
-import "./Videos.css";                    // ← CSS tách riêng
+import "./Videos.css";
 
 const Videos = ({ start, end, nextPage, prevPage, countPages }) => {
   const { videosLoading, videos } = useSelector(

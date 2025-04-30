@@ -41,11 +41,3 @@ root.render(
     </Provider>
   </StrictMode>
 );
-
-// root.render(
-//   <Provider store={store}>
-//     <Router>
-//       <App />
-//     </Router>
-//   </Provider>
-// );
