@@ -166,7 +166,7 @@ const Home = () => {
 
               {activeTab === "uploaded" &&
                 (Array.isArray(videos) ? videos : [])
-                  .slice(0, 6)
+                  .slice(0, 9)
                   .map((video, idx) => (
                     <VideoCard
                       key={`uploaded-${idx}`}
