@@ -1,22 +1,22 @@
 // 1. IMPORT ======================================================================================
 import { useEffect, useState, useRef } from 'react';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import { recognition, speak, toggleRecognition } from './api/voiceRecognition';
 import { addVideos } from './redux/actionCreators/videosActionCreator';
 
-import Home from './components/Home';
-import Navbar from './components/Navbar';
+import Home from './components/Home/Home';
+import Navbar from './components/Navbar/Navbar';
 import PopUp from './components/PopUp';
 import OpenVideoHome from './components/OpenVideo/OpenVideoHome';
-import CurrentVideo from './components/CurrentVideo';
-import Videos from './components/Videos';
-import Search from './components/Search';
+import CurrentVideo from './components/CurrentVideo/CurrentVideo';
+import Videos from './components/Videos/Videos';
+import Search from './components/Search/Search';
 import ChatWithAI from './components/AIChat/ChatWithAI';
-import InstructionScreen from './components/InstructionScreen';
-import Page404 from './components/Page404';
-
+import InstructionScreen from './components/InstructionScreen/InstructionScreen';
+import Page404 from './components/Page404/Page404';
+import Footer from './components/Footer/Footer';
 // 2. COMPONENT ====================================================================================
 const App = () => {
   // 2.1 STATE =====================================================================================
@@ -276,7 +276,7 @@ const App = () => {
       return;
     }
 
-    console.log('⚠️ Không nhận dạng được lệnh cuộn!');
+    console.log(' Không nhận dạng được lệnh cuộn!');
   };
 
   const handleVideoSelection = async (command) => {
@@ -473,6 +473,7 @@ const App = () => {
         </Route>
         <Route component={Page404} />
       </Switch>
+      <Footer />
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import React from 'react';
 import { StrictMode } from 'react'
-import { VoiceCommandProvider } from './context/VoiceCommandContext';
 
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -54,10 +53,8 @@ root.render(
         <Provider store={store}>
             <Router>
                 <ThemeProvider theme={theme}>
-                    <CssBaseline />
-                    <VoiceCommandProvider>
-                        <App />
-                    </VoiceCommandProvider>
+                    <CssBaseline />                    
+                        <App />                    
                 </ThemeProvider>
             </Router>
         </Provider>
