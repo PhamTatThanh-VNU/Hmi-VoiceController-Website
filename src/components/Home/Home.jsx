@@ -6,7 +6,7 @@ import "./Home.css";
 const Home = () => {
   const [loaded, setLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState("popular");
-  const ROTATION_INTERVAL = 3000; // Thời gian chuyển đổi tab (5 giây)
+  const ROTATION_INTERVAL = 10000; // Thời gian chuyển đổi tab (5 giây)
 
   const { videosLoading, videos, popularVideos } = useSelector(
     (state) => ({

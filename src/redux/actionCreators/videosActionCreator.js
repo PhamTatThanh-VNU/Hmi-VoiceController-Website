@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { channel_ytb } from '../../utils/constants';
 const setVideosLoading = (data) => ({
   type: 'SET_VIDEOS_LOADING',
   payload: data,
@@ -21,7 +21,7 @@ export const addVideos = () => (dispatch) => {
   axios
     .get(import.meta.env.VITE_APP_Youtube_API, {
       params: {
-        channelId: 'UCA_23dkEYToAc37hjSsCnXA',
+        channelId: channel_ytb,
         order: 'date',
         part: 'snippet',
         type: 'video',
@@ -44,7 +44,7 @@ export const addPopularVideos = () => (dispatch) => {
   axios
     .get(import.meta.env.VITE_APP_Youtube_API, {
       params: {
-        channelId: 'UCA_23dkEYToAc37hjSsCnXA',
+        channelId: channel_ytb,
         order: 'viewCount',
         part: 'snippet',
         type: 'video',

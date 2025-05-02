@@ -191,6 +191,7 @@ const App = () => {
         await speak(`Đã chuyển tới ${pageName}`);
       }
     } else {
+      history.push({ pathname: `/${command}` });
       await speak('Trang này không tồn tại. Vui lòng thử lệnh khác.');
     }
   };
@@ -239,44 +240,62 @@ const App = () => {
       return;
     }
 
-    // Kéo xuống liên tục
+    // // Kéo xuống liên tục
+    // if (
+    //   lowerCaseCommand.includes('kéo xuống') ||
+    //   lowerCaseCommand.includes('cuộn xuống')
+    // ) {
+    //   scrollInterval.current = setInterval(() => {
+    //     if (
+    //       window.scrollY + window.innerHeight >=
+    //       document.documentElement.scrollHeight
+    //     ) {
+    //       clearInterval(scrollInterval.current);
+    //       scrollInterval.current = null;
+    //       console.log('✅ Đã tới cuối trang!');
+    //       return;
+    //     }
+    //     window.scrollBy({ top: 10, behavior: 'smooth' });
+    //   }, 30);
+    //   return;
+    // }
+
+    // // Kéo lên liên tục
+    // if (
+    //   lowerCaseCommand.includes('kéo lên') ||
+    //   lowerCaseCommand.includes('cuộn lên')
+    // ) {
+    //   scrollInterval.current = setInterval(() => {
+    //     if (window.scrollY <= 0) {
+    //       clearInterval(scrollInterval.current);
+    //       scrollInterval.current = null;
+    //       console.log('✅ Đã tới đầu trang!');
+    //       return;
+    //     }
+    //     window.scrollBy({ top: -10, behavior: 'smooth' });
+    //   }, 30);
+    //   return;
+    // }
+
+    // Kéo xuống một lần
     if (
       lowerCaseCommand.includes('kéo xuống') ||
       lowerCaseCommand.includes('cuộn xuống')
     ) {
-      scrollInterval.current = setInterval(() => {
-        if (
-          window.scrollY + window.innerHeight >=
-          document.documentElement.scrollHeight
-        ) {
-          clearInterval(scrollInterval.current);
-          scrollInterval.current = null;
-          console.log('✅ Đã tới cuối trang!');
-          return;
-        }
-        window.scrollBy({ top: 10, behavior: 'smooth' });
-      }, 30);
+      window.scrollBy({ top: 500, behavior: 'smooth' });
       return;
     }
 
-    // Kéo lên liên tục
+    // Kéo lên một lần
     if (
       lowerCaseCommand.includes('kéo lên') ||
       lowerCaseCommand.includes('cuộn lên')
     ) {
-      scrollInterval.current = setInterval(() => {
-        if (window.scrollY <= 0) {
-          clearInterval(scrollInterval.current);
-          scrollInterval.current = null;
-          console.log('✅ Đã tới đầu trang!');
-          return;
-        }
-        window.scrollBy({ top: -10, behavior: 'smooth' });
-      }, 30);
+      window.scrollBy({ top: -500, behavior: 'smooth' });
       return;
     }
 
-    console.log(' Không nhận dạng được lệnh cuộn!');
+    console.log('❓ Không nhận dạng được lệnh cuộn!');
   };
 
   const handleVideoSelection = async (command) => {
@@ -311,7 +330,6 @@ const App = () => {
         return;
       }
       target = searchResults[n - 1];
-
     } else {
       // Trang Home
       if (n % 2 === 1) {
@@ -361,7 +379,12 @@ const App = () => {
     }
 
     /* ─────── 3. Tua video ─────── */
-    if (lc.includes('tua') || lc.includes('tour') || lc.includes('tu') || lc.includes('to')) {
+    if (
+      lc.includes('tua') ||
+      lc.includes('tour') ||
+      lc.includes('tu') ||
+      lc.includes('to')
+    ) {
       const foundNumber = lc.match(/\d+/);
       let seconds = foundNumber ? +foundNumber[0] : 10;
       if (lc.includes('phút')) seconds *= 60;
@@ -378,8 +401,8 @@ const App = () => {
       let targetTime = isForward
         ? now + seconds
         : isBackward
-          ? now - seconds
-          : now + seconds;
+        ? now - seconds
+        : now + seconds;
 
       if (!player.seekTo || typeof player.seekTo !== 'function') {
         speak('Không thể tua video lúc này. Vui lòng thử lại.');
@@ -389,7 +412,6 @@ const App = () => {
       targetTime = Math.max(0, targetTime);
       player.seekTo(targetTime, true);
     }
-
 
     /* ───────── 4. Lệnh không khớp ───────── */
     speak('Không nhận dạng được lệnh điều khiển video.');
@@ -431,7 +453,6 @@ const App = () => {
     setEnd((prev) => prev + 12);
     setCountPages((prev) => prev + 1);
   };
-
 
   // 2.4 JSX =======================================================================================
   return (
