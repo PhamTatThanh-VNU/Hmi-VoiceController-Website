@@ -1,7 +1,8 @@
-# 🎤 Voice Command YouTube Controller
+# 🎙️ Voice-Controlled YouTube Experience
 
-A voice-controlled web interface that lets users **watch YouTube videos** and navigate the site using **Vietnamese voice commands** — completely **hands-free**.
+A fully **hands-free** web application that lets users **watch and control YouTube videos** using **Vietnamese voice commands** — no mouse, no keyboard required.
 
+📺 **Demo Video**: [Watch on YouTube](https://youtu.be/EHISt6xo754)
 ## 🚀 Overview
 
 This project enables natural voice interaction for:
